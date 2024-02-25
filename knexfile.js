@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 module.exports = {
-  client: "sqlite3",
+  client: "mysql2",
   connection: {
     host: process.env.DB_HOST,
     database: process.env.DB_LOCAL_DBNAME,

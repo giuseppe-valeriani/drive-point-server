@@ -1,12 +1,13 @@
 {
   "name": "drive-point-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "drive-point server with MySQL database",
   "main": "server.js",
   "scripts": {
-    "start": "node --watch server.js"
+    "start": "node --watch server.js",
+    "reset": "knex migrate:rollback && knex migrate:latest && knex seed:run"
   },
-  "author": "",
+  "author": "Giuseppe Valeriani",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
