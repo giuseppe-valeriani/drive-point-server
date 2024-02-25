@@ -1,9 +1,12 @@
+require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
+const PORT = process.env.PORT;
 const server = express();
-const PORT = 8080;
+const pupilsRoutes = require("./routes/pupilsRoutes");
 
-server.use("/", (_req, res) => {
-  res.send("active!");
-});
+server.use(cors());
+server.use(express.json());
+server.use("/", pupilsRoutes);
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
