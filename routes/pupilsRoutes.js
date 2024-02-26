@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
     const response = await knex("pupils");
     return res.status(200).json(response);
   } catch (error) {
-    res.status(500).json(error.code);
+    return res.status(500).json(error.code);
   }
 });
 
@@ -30,16 +30,34 @@ router.post("/", async (req, res) => {
   }
 });
 
-// router.patch("/:id", async (req, res) => {
-//   if (!req.params.id || !req.body) {
-//     return res.status(400).json({ message: "Invalid request" });
-//   }
-//   try {
-//     const
-//     const foundRecord = await knex("pupils").where({ id: req.params.id }).first();
-//     const modifiedRecord = {...foundRecord, req.body}
-//     return res.status(200).json(response);
-//   } catch (error) {
-//     return res.status(500).json(error.code);
-//   }
-// });
+router.patch("/:id", async (req, res) => {
+  if (!req.params.id || !req.body) {
+    return res.status(400).json({ message: "Invalid request" });
+  }
+  try {
+    const updatedField = req.body;
+    const foundRecord = await knex("pupils")
+      .where({ id: req.params.id })
+      .first();
+    const modifiedRecord = { ...foundRecord, ...updatedField };
+    await knex("pupils")
+      .where({ id: req.params.id })
+      .first()
+      .update(modifiedRecord);
+    return res.status(201).json(modifiedRecord);
+  } catch (error) {
+    return res.status(500).json(error.code);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  if (!req.params.id) {
+    return res.status(400).json({ message: "Invalid request" });
+  }
+  try {
+    await knex("pupils").where({ id: req.params.id }).del();
+    return res.status(204).json({ message: "Record deleted" });
+  } catch (error) {
+    return res.status(500).json(error.code);
+  }
+});
