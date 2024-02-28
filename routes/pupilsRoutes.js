@@ -2,15 +2,6 @@ const router = require("express").Router();
 const knex = require("knex")(require("../knexfile"));
 module.exports = router;
 
-router.get("/", async (req, res) => {
-  try {
-    const response = await knex("pupils");
-    return res.status(200).json(response);
-  } catch (error) {
-    return res.status(500).json(error.code);
-  }
-});
-
 router.post("/", async (req, res) => {
   if (!req.body.name || !req.body.starting_date) {
     return res
@@ -25,6 +16,27 @@ router.post("/", async (req, res) => {
     const create = await knex("pupils").insert(newPupil);
     const response = await knex("pupils").where({ id: create[0] }).first();
     return res.status(201).json(response);
+  } catch (error) {
+    return res.status(500).json(error.code);
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const response = await knex("pupils");
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json(error.code);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  if (!req.params.id) {
+    return res.status(400).json({ message: "Invalid request" });
+  }
+  try {
+    const response = await knex("pupils").where({ id: req.params.id }).first();
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json(error.code);
   }
