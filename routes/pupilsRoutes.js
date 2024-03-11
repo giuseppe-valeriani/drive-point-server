@@ -1,75 +1,60 @@
 const router = require("express").Router();
-const knex = require("knex")(require("../knexfile"));
+const Pupils = require("../models/pupilsModel");
 module.exports = router;
 
 router.post("/", async (req, res) => {
-  if (!req.body.name || !req.body.starting_date) {
-    return res
-      .status(400)
-      .json({ message: "Invalid input, please provide required fields" });
-  }
   try {
-    const newPupil = {
-      name: req.body.name,
-      starting_date: req.body.starting_date,
-    };
-    const create = await knex("pupils").insert(newPupil);
-    const response = await knex("pupils").where({ id: create[0] }).first();
-    return res.status(201).json(response);
+    const newPupil = { ...req.body, notes: "" };
+    const pupils = await Pupils.create(newPupil);
+    return res.status(201).json(pupils);
   } catch (error) {
-    return res.status(500).json(error.code);
+    return res.status(500).json({ message: error.message });
   }
 });
 
 router.get("/", async (req, res) => {
   try {
-    const response = await knex("pupils");
-    return res.status(200).json(response);
+    const pupils = await Pupils.find({});
+    return res.status(200).json(pupils);
   } catch (error) {
-    return res.status(500).json(error.code);
+    return res.status(500).json({ message: error.message });
   }
 });
 
 router.get("/:id", async (req, res) => {
-  if (!req.params.id) {
-    return res.status(400).json({ message: "Invalid request" });
-  }
   try {
-    const response = await knex("pupils").where({ id: req.params.id }).first();
-    return res.status(200).json(response);
+    const pupil = await Pupils.findById(req.params.id);
+    return res.status(200).json(pupil);
   } catch (error) {
-    return res.status(500).json(error.code);
+    return res.status(500).json({ message: error.message });
   }
 });
 
-router.patch("/:id", async (req, res) => {
-  if (!req.params.id || !req.body) {
-    return res.status(400).json({ message: "Invalid request" });
-  }
+router.put("/:id", async (req, res) => {
   try {
-    const updatedField = req.body;
-    const foundRecord = await knex("pupils")
-      .where({ id: req.params.id })
-      .first();
-    const modifiedRecord = { ...foundRecord, ...updatedField };
-    await knex("pupils")
-      .where({ id: req.params.id })
-      .first()
-      .update(modifiedRecord);
-    return res.status(201).json(modifiedRecord);
+    const newPupil = await Pupils.findByIdAndUpdate(req.params.id, req.body);
+    if (!newPupil) {
+      return res
+        .status(404)
+        .json({ message: `No pupil with ID ${req.params.id} found` });
+    }
+    const updatedPupil = await Pupils.findById(req.params.id);
+    return res.status(201).json(updatedPupil);
   } catch (error) {
-    return res.status(500).json(error.code);
+    return res.status(500).json({ message: error.message });
   }
 });
 
 router.delete("/:id", async (req, res) => {
-  if (!req.params.id) {
-    return res.status(400).json({ message: "Invalid request" });
-  }
   try {
-    await knex("pupils").where({ id: req.params.id }).del();
-    return res.status(204).json({ message: "Record deleted" });
+    const pupil = await Pupils.findByIdAndDelete(req.params.id);
+    if (!pupil) {
+      return res
+        .status(404)
+        .json({ message: `Cannot find any pupil with ID ${req.params.id}` });
+    }
+    return res.status(204).json(pupil);
   } catch (error) {
-    return res.status(500).json(error.code);
+    return res.status(500).json({ message: error.message });
   }
 });
