@@ -32,14 +32,14 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const newPupil = await Pupil.findByIdAndUpdate(req.params.id, req.body);
-    if (!newPupil) {
-      return res
-        .status(404)
-        .json({ message: `No pupil with ID ${req.params.id} found` });
-    }
-    const updatedPupil = await Pupil.findById(req.params.id);
-    return res.status(201).json(updatedPupil);
+    const pupil = await Pupil.findById(req.params.id);
+    const foundSkill = pupil.skills.find(
+      (skill) => skill.skill === req.body.skill
+    );
+    const findIndex = pupil.skills.findIndex((el) => el._id === foundSkill._id);
+    pupil.skills[findIndex] = req.body;
+    await pupil.save();
+    return res.json(pupil);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
