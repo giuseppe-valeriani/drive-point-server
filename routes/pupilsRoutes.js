@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const Pupil = require("../models/Pupil");
+const startingSkills = require("../models/StartingSkills");
 module.exports = router;
 
 router.post("/", async (req, res) => {
   try {
-    const newPupil = { ...req.body, notes: "" };
+    const newPupil = { ...req.body, notes: "", skills: startingSkills };
     const pupils = await Pupil.create(newPupil);
     return res.status(201).json(pupils);
   } catch (error) {
@@ -38,6 +39,7 @@ router.put("/:id", async (req, res) => {
     );
     const findIndex = pupil.skills.findIndex((el) => el._id === foundSkill._id);
     pupil.skills[findIndex] = req.body;
+    pupil.skills[findIndex].label = foundSkill.label;
     await pupil.save();
     return res.json(pupil);
   } catch (error) {

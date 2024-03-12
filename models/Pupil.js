@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const skillSchema = new mongoose.Schema({
+  label: String,
   skill: String,
   value: Number,
 });
