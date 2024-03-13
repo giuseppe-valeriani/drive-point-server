@@ -9,7 +9,7 @@ const skillSchema = new mongoose.Schema({
 const paymentSchema = new mongoose.Schema({
   date: String,
   amount: Number,
-  paid: Boolean,
+  isPaid: Boolean,
 });
 
 const pupilsSchema = new mongoose.Schema({

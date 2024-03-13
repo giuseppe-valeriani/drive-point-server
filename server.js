@@ -5,10 +5,12 @@ const mongoose = require("mongoose");
 const PORT = process.env.PORT;
 const server = express();
 const pupilsRoutes = require("./routes/pupilsRoutes");
+const paymentsRoutes = require("./routes/paymentsRoutes");
 
-server.use(cors());
 server.use(express.json());
+server.use(cors());
 server.use("/", pupilsRoutes);
+server.use("/", paymentsRoutes);
 
 mongoose
   .connect(

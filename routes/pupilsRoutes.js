@@ -55,7 +55,7 @@ router.delete("/:id", async (req, res) => {
         .status(404)
         .json({ message: `Cannot find any pupil with ID ${req.params.id}` });
     }
-    return res.status(204).json(pupil);
+    return res.status(204).json({ message: "Element deleted" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
