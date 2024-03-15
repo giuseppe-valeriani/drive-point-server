@@ -7,11 +7,7 @@ const server = express();
 const pupilsRoutes = require("./routes/pupilsRoutes");
 const paymentsRoutes = require("./routes/paymentsRoutes");
 
-server.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-);
+server.use(cors());
 server.use(express.json());
 server.use("/", pupilsRoutes);
 server.use("/", paymentsRoutes);
