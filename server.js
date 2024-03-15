@@ -7,8 +7,8 @@ const server = express();
 const pupilsRoutes = require("./routes/pupilsRoutes");
 const paymentsRoutes = require("./routes/paymentsRoutes");
 
-server.use(express.json());
 server.use(cors());
+server.use(express.json());
 server.use("/", pupilsRoutes);
 server.use("/", paymentsRoutes);
 
