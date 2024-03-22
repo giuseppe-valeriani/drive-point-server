@@ -12,7 +12,7 @@ const validationList = [
 ];
 
 // has to go in database
-const refreshList = [];
+let tokenList = [];
 
 router.post("/login", (req, res) => {
   if (!req.body.user || !req.body.password) {
@@ -29,7 +29,7 @@ router.post("/login", (req, res) => {
     const user = { name: req.body.user };
     const accessToken = generateToken(user);
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN);
-    refreshList.push(refreshToken);
+    tokenList.push(refreshToken);
     return res
       .status(200)
       .json({ accessToken: accessToken, refreshToken: refreshToken });
@@ -37,4 +37,26 @@ router.post("/login", (req, res) => {
   return res
     .status(403)
     .json({ message: "User not verified. Please contact admin" });
+});
+
+router.post("/token", (req, res) => {
+  const refreshToken = req.body.token;
+  if (!refreshToken) {
+    return res.status(401).send("Unauthorized");
+  }
+  if (!tokenList.includes(refreshToken)) {
+    return res.status(403).send("Forbidden");
+  }
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (error, user) => {
+    if (error) {
+      return res.status(403).send("Token error");
+    }
+    const accessToken = generateToken({ name: user.user });
+    return res.status(200).json({ accessToken: accessToken });
+  });
+});
+
+router.delete("/logout", (req, res) => {
+  tokenList = tokenList.filter((token) => token !== req.body.token);
+  return res.status(204).send("Logged out");
 });
