@@ -6,8 +6,8 @@ module.exports = router;
 
 const validationList = [
   {
-    user: "admin",
-    password: "password",
+    user: process.env.LOGIN_USER,
+    password: process.env.LOGIN_PASSWORD,
   },
 ];
 
