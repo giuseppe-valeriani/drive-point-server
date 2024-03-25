@@ -7,6 +7,7 @@ const server = express();
 const accessRoutes = require("./routes/accessRoutes");
 const pupilsRoutes = require("./routes/pupilsRoutes");
 const paymentsRoutes = require("./routes/paymentsRoutes");
+const notesRoutes = require("./routes/notesRoutes");
 const { authenticateToken } = require("./middlewares/auth");
 
 server.use(cors());
@@ -14,6 +15,7 @@ server.use(express.json());
 server.use("/", accessRoutes);
 server.use("/", authenticateToken, pupilsRoutes);
 server.use("/", authenticateToken, paymentsRoutes);
+server.use("/", authenticateToken, notesRoutes);
 
 mongoose
   .connect(
