@@ -18,7 +18,7 @@ function authenticateToken(req, res, next) {
 
 function generateToken(user) {
   // expiration time must be adjusted before to deploy
-  return jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: "10m" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: "30m" });
 }
 
 module.exports = { authenticateToken, generateToken };
